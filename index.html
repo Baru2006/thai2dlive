@@ -3,265 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THAI 2D LIVE - HOME</title>
+    <title>Thai 2D Live - Home</title>
     <style>
         :root {
-            --navy: #001f3f;
-            --deep-blue: #003366;
-            --white: #ffffff;
-            --gray: #f4f4f4;
-            --text-dim: #666;
-            --live-green: #2ecc71;
-            --closed-gray: #bdc3c7;
+            --primary: #1a237e;
+            --accent: #3949ab;
+            --bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+            --live-color: #e74c3c;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: var(--gray); color: var(--navy); padding-bottom: 80px; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg); color: var(--text-main); line-height: 1.6; padding-bottom: 80px; }
         
-        header {
-            background-color: var(--navy);
-            color: var(--white);
-            padding: 15px;
-            text-align: center;
-            position: relative;
-            border-bottom: 4px solid var(--deep-blue);
-        }
-        .header-title { font-size: 24px; font-weight: 800; letter-spacing: 2px; }
-        .live-indicator {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            font-size: 12px;
-            margin-top: 5px;
-        }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background-color: var(--closed-gray); }
-        .dot.active { background-color: var(--live-green); animation: pulse 1.5s infinite; }
+        header { background: var(--primary); color: white; padding: 1.5rem; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .container { max-width: 500px; margin: 0 auto; padding: 15px; }
 
+        .card { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); position: relative; }
+        
+        /* Live Card */
+        .live-card { border-top: 5px solid var(--live-color); text-align: center; }
+        .live-title { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 5px; }
+        .live-number { font-size: 4.5rem; font-weight: 800; color: var(--primary); line-height: 1; }
+        .market-status { font-size: 0.8rem; margin-top: 10px; font-weight: bold; }
+        .status-open { color: #27ae60; }
+        .status-closed { color: #e74c3c; }
+
+        /* Timer */
+        .update-timer { font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; }
+
+        /* Animation */
         @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.4); opacity: 0.5; }
-            100% { transform: scale(1); opacity: 1; }
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(0.98); }
+            100% { opacity: 1; transform: scale(1); }
         }
+        .blinking { animation: pulse 1.5s infinite ease-in-out; }
 
-        .main-live {
-            background: var(--white);
-            margin: 15px;
-            padding: 30px 15px;
-            text-align: center;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-        .big-number { font-size: 80px; font-weight: 900; line-height: 1; margin-bottom: 10px; }
-        .meta-info { font-size: 14px; color: var(--text-dim); }
-        .last-updated { font-size: 11px; color: #999; margin-top: 8px; }
+        /* Past Results Grid */
+        .grid-title { font-weight: 700; margin: 25px 0 15px; font-size: 1.1rem; color: var(--primary); }
+        .results-grid { display: grid; gap: 15px; grid-template-columns: 1fr 1fr; }
+        .result-card { padding: 15px; text-align: center; }
+        .result-time { font-size: 0.8rem; font-weight: bold; color: var(--accent); margin-bottom: 5px; }
+        .result-num { font-size: 1.8rem; font-weight: 700; color: var(--primary); }
+        .result-details { font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; }
 
-        .market-blink { animation: soft-blink 1.5s infinite ease-in-out; }
-        @keyframes soft-blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            padding: 0 15px;
-        }
-        .slot-card {
-            background: var(--white);
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid var(--navy);
-        }
-        .slot-time {
-            display: inline-block;
-            background: var(--navy);
-            color: var(--white);
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 12px;
-            margin-bottom: 10px;
-        }
-        .slot-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
-        .slot-val { font-weight: bold; color: var(--deep-blue); }
-        .slot-2d { font-size: 24px; font-weight: 800; text-align: right; margin-top: 5px; }
-
-        nav.footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            height: 70px;
-            background: var(--white);
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            border-top: 1px solid #ddd;
-            z-index: 100;
-        }
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            color: var(--text-dim);
-            font-size: 11px;
-            font-weight: bold;
-        }
-        .nav-item.active { color: var(--navy); background: #f0f7ff; }
-        .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; }
-
-        .waiting-msg { font-size: 14px; font-style: italic; color: #888; margin-top: 10px; }
+        /* Bottom Nav */
+        nav { position: fixed; bottom: 0; width: 100%; max-width: 500px; background: white; display: flex; justify-content: space-around; padding: 12px; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); left: 50%; transform: translateX(-50%); }
+        nav a { text-decoration: none; color: var(--text-muted); font-size: 0.8rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; }
+        nav a.active { color: var(--primary); }
+        .icon { width: 24px; height: 24px; margin-bottom: 4px; border: 2px solid currentColor; border-radius: 4px; }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="header-title">THAI 2D LIVE</div>
-    <div class="live-indicator">
-        <div id="statusDot" class="dot"></div>
-        <span id="statusText">Market Closed</span>
+    <header>
+        <h1>THAI 2D LIVE</h1>
+    </header>
+
+    <div class="container">
+        <!-- Live Result -->
+        <div class="card live-card" id="liveContainer">
+            <div class="live-title">Live 2D Result</div>
+            <div id="liveNumber" class="live-number">--</div>
+            <div id="marketStatus" class="market-status">Checking market...</div>
+            <div id="timer" class="update-timer">Last updated: 0s ago</div>
+        </div>
+
+        <div class="grid-title">Today's Results</div>
+        <div class="results-grid" id="pastResults">
+            <!-- 11:00 AM -->
+            <div class="card result-card">
+                <div class="result-time">11:00 AM</div>
+                <div id="res-1100" class="result-num">--</div>
+                <div id="det-1100" class="result-details">SET: -- | VAL: --</div>
+            </div>
+            <!-- 12:01 PM -->
+            <div class="card result-card">
+                <div class="result-time">12:01 PM</div>
+                <div id="res-1201" class="result-num">--</div>
+                <div id="det-1201" class="result-details">SET: -- | VAL: --</div>
+            </div>
+            <!-- 3:00 PM -->
+            <div class="card result-card">
+                <div class="result-time">03:00 PM</div>
+                <div id="res-1500" class="result-num">--</div>
+                <div id="det-1500" class="result-details">SET: -- | VAL: --</div>
+            </div>
+            <!-- 4:30 PM -->
+            <div class="card result-card">
+                <div class="result-time">04:30 PM</div>
+                <div id="res-1630" class="result-num">--</div>
+                <div id="det-1630" class="result-details">SET: -- | VAL: --</div>
+            </div>
+        </div>
     </div>
-</header>
 
-<div class="main-live">
-    <div id="mainNumber" class="big-number">??</div>
-    <div class="meta-info">
-        Date: <span id="currentDate">--</span> | Time: <span id="currentTime">00:00:00</span>
-    </div>
-    <div id="updateTimer" class="last-updated">Last updated: 0 seconds ago</div>
-    <div id="waitingMsg" class="waiting-msg" style="display:none;">Waiting for market...</div>
-</div>
+    <nav>
+        <a href="index.html" class="active">Home</a>
+        <a href="gift.html">Gift</a>
+        <a href="update.html">Update</a>
+    </nav>
 
-<div class="grid-container" id="slots">
-    <!-- AM Slots -->
-    <div class="slot-card">
-        <span class="slot-time">12:01 PM</span>
-        <div class="slot-row"><span>set:</span> <span class="slot-val" id="set-1201">--</span></div>
-        <div class="slot-row"><span>value:</span> <span class="slot-val" id="val-1201">--</span></div>
-        <div class="slot-2d" id="twod-1201">??</div>
-    </div>
-    <!-- PM Slots -->
-    <div class="slot-card">
-        <span class="slot-time">04:30 PM</span>
-        <div class="slot-row"><span>set:</span> <span class="slot-val" id="set-1630">--</span></div>
-        <div class="slot-row"><span>value:</span> <span class="slot-val" id="val-1630">--</span></div>
-        <div class="slot-2d" id="twod-1630">??</div>
-    </div>
-</div>
+    <script>
+        let lastUpdateTime = Date.now();
+        let currentData = null;
 
-<nav class="footer">
-    <a href="gift.html" class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="14" rx="2"/><path d="M12 5V22M7 12H17M12 5H7M12 5H17"/></svg>
-        GIFT 2D
-    </a>
-    <a href="home.html" class="nav-item active">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        HOME
-    </a>
-    <a href="update.html" class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        UPDATE
-    </a>
-</nav>
-
-<script>
-    let lastUpdateSeconds = 0;
-    let isMarketOpen = false;
-    let currentSessionDate = new Date().toDateString();
-
-    function updateClock() {
-        const now = new Date();
-        document.getElementById('currentTime').innerText = now.toLocaleTimeString('en-GB');
-        document.getElementById('currentDate').innerText = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
-        
-        // Auto reset on date change
-        if (now.toDateString() !== currentSessionDate) {
-            resetUI();
-            currentSessionDate = now.toDateString();
+        function updateTimer() {
+            const seconds = Math.floor((Date.now() - lastUpdateTime) / 1000);
+            document.getElementById('timer').innerText = `Last updated: ${seconds}s ago`;
         }
 
-        if (isMarketOpen) {
-            lastUpdateSeconds++;
-            document.getElementById('updateTimer').innerText = `Last updated: ${lastUpdateSeconds} seconds ago`;
+        async function fetchLive() {
+            try {
+                const response = await fetch('https://api.thaistock2d.com/live');
+                const data = await response.json();
+                renderLive(data);
+                lastUpdateTime = Date.now();
+            } catch (error) {
+                console.error('Live fetch error:', error);
+            }
         }
-    }
 
-    function resetUI() {
-        document.getElementById('mainNumber').innerText = "??";
-        document.getElementById('mainNumber').classList.remove('market-blink');
-        document.getElementById('waitingMsg').style.display = 'block';
-        const slots = ['930', '1201', '1400', '1630'];
-        slots.forEach(s => {
-            document.getElementById(`set-${s}`).innerText = "--";
-            document.getElementById(`val-${s}`).innerText = "--";
-            document.getElementById(`twod-${s}`).innerText = "??";
-        });
-    }
+        async function fetchResults() {
+            try {
+                const response = await fetch('https://api.thaistock2d.com/2d_result');
+                const data = await response.json();
+                renderPastResults(data);
+            } catch (error) {
+                console.error('Past results fetch error:', error);
+            }
+        }
 
-    async function fetchLive() {
-        try {
-            const response = await fetch('https://api.thaistock2d.com/live');
-            const data = await response.json();
+        function renderLive(data) {
+            const liveNumEl = document.getElementById('liveNumber');
+            const statusEl = document.getElementById('marketStatus');
+            const liveContainer = document.getElementById('liveContainer');
+
+            // API structure handling
+            const liveData = data.live || {};
+            const isClosed = data.status === 'closed';
             
-            // Logic to determine market status based on time or API response
-            // For this demo, we assume market is open if we get valid live data
-            if (data && data.live) {
-                isMarketOpen = true;
-                lastUpdateSeconds = 0;
-                updateLiveUI(data.live);
-            }
-        } catch (e) {
-            console.error("Fetch failed", e);
-        }
-    }
-
-    async function fetchResults() {
-        try {
-            const response = await fetch('https://api.thaistock2d.com/live');
-            const data = await response.json();
-            if(data) updateResultUI(data);
-        } catch (e) {}
-    }
-
-    function updateLiveUI(live) {
-        const mainNum = document.getElementById('mainNumber');
-        mainNum.innerText = live.twod || "??";
-        
-        document.getElementById('statusDot').classList.add('active');
-        document.getElementById('statusText').innerText = "LIVE";
-        document.getElementById('waitingMsg').style.display = 'none';
-        
-        mainNum.classList.add('market-blink');
-        // Apply blink to other values
-        document.querySelectorAll('.slot-val').forEach(el => el.classList.add('market-blink'));
-    }
-
-    function updateResultUI(results) {
-        // Logic to map API results to slots 09:30, 12:01, 14:00, 16:30
-        // This is a representative mapping
-        const today = results[0]; // Assuming newest is first
-        if(today) {
-            // Mapping examples (adjust based on actual API keys)
-            if(today.child) {
-                today.child.forEach(item => {
-                    const timeKey = item.time.replace(':', '');
-                    const elSet = document.getElementById(`set-${timeKey}`);
-                    const elVal = document.getElementById(`val-${timeKey}`);
-                    const elTwod = document.getElementById(`twod-${timeKey}`);
-                    if(elSet) elSet.innerText = item.set;
-                    if(elVal) elVal.innerText = item.value;
-                    if(elTwod) elTwod.innerText = item.twod;
-                });
+            liveNumEl.innerText = liveData.twod || '--';
+            
+            if (!isClosed) {
+                statusEl.innerText = '● MARKET OPEN';
+                statusEl.className = 'market-status status-open';
+                liveContainer.classList.add('blinking');
+            } else {
+                statusEl.innerText = 'MARKET CLOSED';
+                statusEl.className = 'market-status status-closed';
+                liveContainer.classList.remove('blinking');
             }
         }
-    }
 
-    setInterval(updateClock, 1000);
-    setInterval(fetchLive, 10000);
-    fetchLive();
-    fetchResults();
-</script>
+        function renderPastResults(data) {
+            // Mapping API times to IDs
+            const timeSlots = {
+                '11:00:00': '1100',
+                '12:01:00': '1201',
+                '15:00:00': '1500',
+                '16:30:00': '1630'
+            };
+
+            // Today's Date String
+            const today = new Date().toISOString().split('T')[0];
+
+            data.forEach(item => {
+                if(item.date === today && timeSlots[item.time]) {
+                    const id = timeSlots[item.time];
+                    document.getElementById(`res-${id}`).innerText = item.twod || '--';
+                    document.getElementById(`det-${id}`).innerText = `SET: ${item.set} | VAL: ${item.value}`;
+                }
+            });
+        }
+
+        function checkNewDay() {
+            const lastDate = localStorage.getItem('last_date');
+            const today = new Date().toDateString();
+            if (lastDate !== today) {
+                localStorage.setItem('last_date', today);
+                // Reset UI
+                document.querySelectorAll('.result-num').forEach(el => el.innerText = '--');
+                document.getElementById('liveNumber').innerText = '--';
+            }
+        }
+
+        // Init
+        checkNewDay();
+        fetchLive();
+        fetchResults();
+
+        // Intervals
+        setInterval(fetchLive, 10000); // 10s auto-refresh
+        setInterval(updateTimer, 1000);
+        setInterval(fetchResults, 60000); // Check results every minute
+    </script>
 </body>
 </html>
 
-          
