@@ -292,7 +292,7 @@
         const CONFIG = {
             API_LIVE: 'https://api.thaistock2d.com/live',
             API_RESULTS: 'https://api.thaistock2d.com/2d_result',
-            POLL_INTERVAL: 5000,
+            POLL_INTERVAL: 1000,
             SHEET_DB: '', // User to provide SheetDB endpoint for long-term persistence
             DRAW_TIMES: ['11:00', '12:01', '15:00', '16:30'],
             MYANMAR_OFFSET: 6.5 * 60 * 60 * 1000
@@ -434,7 +434,7 @@
                 sessions.forEach(time => {
                     const match = results.find(r => r.time === time);
                     const card = document.querySelector(`.session-card[data-session="${time}"] .session-result`);
-                    if (match && card) card.textContent = match.twod;
+                    if (match && card) card.textContent = row.twod;
                 });
             },
 
