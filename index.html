@@ -433,8 +433,8 @@
                 const sessions = ['11:00', '12:01', '15:00', '16:30'];
                 sessions.forEach(time => {
                     const match = results.find(r => r.time === time);
-                    const card = document.querySelector(`.session-card[data-session="${time}"] .session-result`);
-                    if (match && card) card.textContent = row.twod;
+                    const card = document.querySelector(`.session-card[data-session="${row.twod}"] .session-result`);
+                    if (match && card) card.textContent = data.twod;
                 });
             },
 
