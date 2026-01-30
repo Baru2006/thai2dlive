@@ -10,29 +10,22 @@
 <style>
 :root{
 --bg:#0a0c10;--card:#161b22;--border:#30363d;
---text:#f0f6fc;--muted:#8b949e;--blue:#58a6ff;--green:#3fb950;--yellow:#d29922;
+--text:#f0f6fc;--muted:#8b949e;--blue:#58a6ff;
 }
-*{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Inter}
 header{position:sticky;top:0;background:#0d1117;border-bottom:1px solid var(--border);
-padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
-.status-badge{font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px}
-.status-live{color:var(--green)}
-.status-locked{color:var(--yellow)}
-.hero{padding:20px 16px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
-.main{font-family:JetBrains Mono;font-size:72px;text-align:center}
+padding:12px 16px;display:flex;justify-content:space-between}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
+.main{font-family:JetBrains Mono;font-size:70px;text-align:center}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
 .label{font-size:11px;color:var(--muted)}
-.value{font-family:JetBrains Mono;font-size:18px}
+.value{font-family:JetBrains Mono}
 .sessions{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:0 16px}
 .session-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
-.session-time{font-size:13px;font-weight:700}
 .session-result{font-family:JetBrains Mono;font-size:22px;color:var(--blue)}
-.history{padding:20px 16px}
-table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--border)}
 th,td{padding:10px;font-size:13px}
-th{background:#21262d;color:var(--muted);text-align:left;font-size:10px}
+th{background:#21262d;color:var(--muted);font-size:10px}
 td{border-top:1px solid var(--border)}
 </style>
 </head>
@@ -44,111 +37,81 @@ td{border-top:1px solid var(--border)}
 <strong>SET 2D LIVE</strong><br>
 <span id="clock" style="font-size:11px;color:var(--muted);font-family:JetBrains Mono"></span>
 </div>
-<div id="market-status" class="status-badge">CLOSED</div>
 </header>
 
-<div class="hero">
+<div style="padding:20px 16px">
 <div class="card">
 <div class="label" style="text-align:center">Live Result</div>
-<div id="live-2d" class="main">--</div>
-
+<div id="live2d" class="main">--</div>
 <div class="grid">
-<div>
-<span class="label">SET Index</span>
-<span id="live-set" class="value">----</span>
+<div><span class="label">SET</span><span id="liveset" class="value">--</span></div>
+<div><span class="label">Value</span><span id="liveval" class="value">--</span></div>
 </div>
-<div>
-<span class="label">Value</span>
-<span id="live-val" class="value">----</span>
-</div>
-</div>
-
-<div id="verify" style="margin-top:10px;text-align:center;font-size:11px"></div>
 </div>
 </div>
 
 <div class="sessions">
-<div class="session-card" data-session="11:00">
-<div class="session-time">11:00 AM</div>
-<div class="session-result">--</div>
-</div>
-<div class="session-card" data-session="12:01">
-<div class="session-time">12:01 PM</div>
-<div class="session-result">--</div>
-</div>
-<div class="session-card" data-session="15:00">
-<div class="session-time">03:00 PM</div>
-<div class="session-result">--</div>
-</div>
-<div class="session-card" data-session="16:30">
-<div class="session-time">04:30 PM</div>
-<div class="session-result">--</div>
-</div>
+<div class="session-card" data-session="11:00"><div>11:00 AM</div><div class="session-result">--</div></div>
+<div class="session-card" data-session="12:01"><div>12:01 PM</div><div class="session-result">--</div></div>
+<div class="session-card" data-session="15:00"><div>03:00 PM</div><div class="session-result">--</div></div>
+<div class="session-card" data-session="16:30"><div>04:30 PM</div><div class="session-result">--</div></div>
 </div>
 
-<div class="history">
+<div style="padding:20px 16px">
 <h4>Recent History</h4>
 <table>
-<thead>
-<tr><th>Time</th><th>SET</th><th>Value</th><th>2D</th></tr>
-</thead>
-<tbody id="history-body"></tbody>
+<thead><tr><th>Time</th><th>SET</th><th>Value</th><th>2D</th></tr></thead>
+<tbody id="history"></tbody>
 </table>
 </div>
 
 <script>
 const API='https://api.thaistock2d.com/live';
 
-const normalizeTime = (t)=>{
+const normalize=(t)=>{
  if(!t) return '';
- if(t.includes('AM')||t.includes('PM')){
-  const d=new Date('1970-01-01 '+t);
-  return d.getHours().toString().padStart(2,'0')+':'+
-         d.getMinutes().toString().padStart(2,'0');
- }
- if(t.length>5) return t.slice(0,5);
- return t;
+ const d=new Date('1970-01-01 '+t);
+ return d.getHours().toString().padStart(2,'0')+':' +
+        d.getMinutes().toString().padStart(2,'0');
 };
 
-function updateClock(){
- const now=new Date();
+function clock(){
  document.getElementById('clock').textContent=
- now.toLocaleTimeString('en-GB',{hour12:false});
+ new Date().toLocaleTimeString('en-GB',{hour12:false});
 }
-setInterval(updateClock,1000);updateClock();
+setInterval(clock,1000);clock();
 
-async function update(){
+async function load(){
  const res=await fetch(API);
  const data=await res.json();
 
  if(data.live){
-  document.getElementById('live-2d').textContent=data.live.twod;
-  document.getElementById('live-set').textContent=data.live.set;
-  document.getElementById('live-val').textContent=data.live.value;
+  live2d.textContent=data.live.twod;
+  liveset.textContent=data.live.set;
+  liveval.textContent=data.live.value;
  }
 
- if(data.result){
-  // sessions
+ if(Array.isArray(data.result)){
+  // SESSION SYNC (FIXED)
   ['11:00','12:01','15:00','16:30'].forEach(t=>{
-   const m=data.result.find(r=>normalizeTime(r.time)===t);
+   const m=data.result.find(r=>normalize(r.draw_time)===t);
    const el=document.querySelector(`.session-card[data-session="${t}"] .session-result`);
-   if(m&&el) el.textContent=m.twod;
+   if(m && el) el.textContent=m.twod;
   });
 
-  // history
-  document.getElementById('history-body').innerHTML=
-   data.result.slice(0,10).map(r=>`
-    <tr>
-     <td>${r.time}</td>
-     <td>${r.set}</td>
-     <td>${r.value}</td>
-     <td style="font-weight:700;color:var(--blue)">${r.twod}</td>
-    </tr>`).join('');
+  // HISTORY
+  history.innerHTML=data.result.slice(0,10).map(r=>`
+   <tr>
+    <td>${r.draw_time}</td>
+    <td>${r.set||'-'}</td>
+    <td>${r.value||'-'}</td>
+    <td style="font-weight:700;color:var(--blue)">${r.twod}</td>
+   </tr>`).join('');
  }
 }
 
-update();
-setInterval(update,5000);
+load();
+setInterval(load,5000);
 </script>
 
 </body>
