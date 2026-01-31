@@ -39,9 +39,69 @@
                     </div>
                 </div>
             </section>
+            <section>
+                    <div class="table-container">
+    <h2><span class="status-dot"></span>Market Insights</h2>
+    <table id="modernInternetTable">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Modern</th>
+                <th>Internet</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>9:30 AM</td>
+                <td id="mod930" class="stock-number">--</td>
+                <td id="int930" class="stock-number">--</td>
+            </tr>
+            <tr>
+                <td>2:00 PM</td>
+                <td id="mod1400" class="stock-number">--</td>
+                <td id="int1400" class="stock-number">--</td>
+            </tr>
+        </tbody>
+    </table>
+                    </div>
+                <script>
+    const apimoinURL = "https://sheetdb.io/api/v1/n0wlxdgwqueub";
 
+    async function updateTable() {
+        try {
+            const res = await fetch(apimoinURL);
+            const data = await res.json();
 
+            // Apply value with a subtle transition effect
+            updateValue("mod930", data[0]?.Modern);
+            updateValue("int930", data[0]?.Internet);
+            updateValue("mod1400", data[1]?.Modern);
+            updateValue("int1400", data[1]?.Internet);
 
+        } catch (err) {
+            console.error("API fetch error:", err);
+        }
+    }
+
+    function updateValue(id, value) {
+        const element = document.getElementById(id);
+        const newValue = value || "--";
+        
+        // Only update if value changed to keep it clean
+        if (element.textContent !== newValue) {
+            element.style.opacity = "0";
+            setTimeout(() => {
+                element.textContent = newValue;
+                element.style.opacity = "1";
+            }, 200);
+        }
+    }
+
+    // Initial load + refresh every 5 sec
+    updateTable();
+    setInterval(updateTable, 5000);
+        </script>
+            </section>
             <!-- Session Timeline -->
             <section class="timeline-container">
                 <h2 class="section-title">Today's Results</h2>
