@@ -79,6 +79,50 @@ body {
     border-color: rgba(16, 185, 129, 0.3);
 }
 
+/* MST Display Styles */
+.mst-display {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.mst-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--primary);
+    background: linear-gradient(to right, #fff, var(--primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.mst-date {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+}
+
+.status-indicator {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    background: rgba(56, 189, 248, 0.08);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    color: var(--primary);
+    border-radius: 99px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.3s ease;
+    margin-top: 2px;
+}
+
+.status-indicator.live {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
 /* Container */
 .container {
     padding: 0 16px;
