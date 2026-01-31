@@ -4,10 +4,44 @@ const ui = {
     init() {
         this.updateMain();
         this.updateInsights();
+        this.startMSTClock();
         
         // Orchestrate update loops
         setInterval(() => this.updateMain(), 2000);
         setInterval(() => this.updateInsights(), 8000);
+    },
+
+    /**
+     * Updates the Myanmar Standard Time (MST) display.
+     * Calculated as UTC + 6:30.
+     */
+    startMSTClock() {
+        const updateClock = () => {
+            const now = new Date();
+            // Get UTC time and add 6.5 hours (6h 30m)
+            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+            const mstDate = new Date(utc + (3600000 * 6.5));
+
+            const hours = mstDate.getHours();
+            const minutes = mstDate.getMinutes();
+            const seconds = mstDate.getSeconds();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            const displayHours = hours % 12 || 12;
+
+            const timeString = `${displayHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
+            
+            const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+            const dateString = mstDate.toLocaleDateString('en-US', options).replace(/,/g, '');
+
+            const timeEl = document.getElementById('mst-time');
+            const dateEl = document.getElementById('mst-date');
+            
+            if (timeEl) timeEl.textContent = timeString;
+            if (dateEl) dateEl.textContent = dateString;
+        };
+
+        updateClock();
+        setInterval(updateClock, 1000);
     },
 
     async updateMain() {
@@ -78,3 +112,4 @@ const ui = {
     }
 };
 
+                               
