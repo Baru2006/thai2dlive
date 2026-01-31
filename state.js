@@ -1,6 +1,9 @@
-// Canonical deterministic 2D extraction (no rounding after formatting)
+/**
+ * Canonical deterministic 2D extraction.
+ * Takes SET and Value strings and extracts the specific 2D pair.
+ */
 function compute2D(setStr, valueStr) {
-    if (setStr === '--' || valueStr === '--') return '--';
+    if (!setStr || !valueStr || setStr === '--' || valueStr === '--') return '--';
     const setFixed = parseFloat(setStr).toFixed(2);
     const valueFixed = parseFloat(valueStr).toFixed(2);
     const setSecond = setFixed.charAt(setFixed.indexOf('.') + 2) || '0';
@@ -8,10 +11,14 @@ function compute2D(setStr, valueStr) {
     return setSecond + valueSecond;
 }
 
-// Convert server time (Thai ICT) to MMT minutes for session logic
+/**
+ * Normalizes server time to local session minutes.
+ */
 function getMmtMinutes(serverTimeStr) {
+    if (!serverTimeStr) return 0;
     const [_, timePart] = serverTimeStr.split(' ');
     let [h, m] = timePart.split(':').map(Number);
+    // Offset for local session tracking logic if needed
     m -= 30;
     if (m < 0) {
         m += 60;
@@ -21,16 +28,17 @@ function getMmtMinutes(serverTimeStr) {
     return h * 60 + m;
 }
 
-// Evening verification period in MMT
 function isEveningVerify(mmtMinutes) {
     const start = 16 * 60 + 10;
     const end = 16 * 60 + 40;
     return mmtMinutes >= start && mmtMinutes < end;
 }
 
-// Derive all UI state from server data only
+/**
+ * Transforms raw API response into a clean UI state object.
+ */
 function deriveState(rawData) {
-    if (!rawData) return { error: 'CONNECTION ERROR' };
+    if (!rawData) return { error: 'OFFLINE' };
 
     const live = rawData.live || {};
     const result = rawData.result || [];
@@ -42,23 +50,22 @@ function deriveState(rawData) {
     const mmtMinutes = getMmtMinutes(serverTime);
     const inVerify = isEveningVerify(mmtMinutes);
 
-    // Large display logic (strictly server-driven)
     let large2D = '--';
     let largeStatus = '';
+    
     if (isLive) {
         large2D = current2D;
         largeStatus = 'LIVE';
     } else if (inVerify && result.length === 3) {
-        large2D = 'VERIFYING...';
+        large2D = '...';
         largeStatus = 'VERIFYING';
     } else if (result.length > 0) {
         large2D = result[result.length - 1].twod;
-        largeStatus = 'LOCKED';
+        largeStatus = 'CLOSED';
     } else {
         largeStatus = 'CLOSED';
     }
 
-    // Session blocks (4 fixed sessions)
     const sessions = [
         { label: '11:00 AM', number: '--', status: '' },
         { label: '12:01 PM', number: '--', status: '' },
@@ -66,20 +73,18 @@ function deriveState(rawData) {
         { label: '4:30 PM', number: '--', status: '' }
     ];
 
-    // Fill locked results
     result.slice(0, 4).forEach((res, i) => {
         sessions[i].number = res.twod;
-        sessions[i].status = 'LOCKED';
+        sessions[i].status = 'locked';
     });
 
-    // Overlay current live or verifying on the active session
     const activeIndex = result.length;
     if (isLive && activeIndex < 4) {
         sessions[activeIndex].number = current2D;
-        sessions[activeIndex].status = 'LIVE';
+        sessions[activeIndex].status = 'live';
     } else if (inVerify && result.length === 3) {
-        sessions[3].number = 'VERIFYING...';
-        sessions[3].status = 'VERIFYING';
+        sessions[3].number = '...';
+        sessions[3].status = 'verifying';
     }
 
     return {
@@ -90,3 +95,4 @@ function deriveState(rawData) {
         sessions
     };
 }
+
