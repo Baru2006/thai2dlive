@@ -115,47 +115,58 @@
     <script>
         ui.init();
     </script>
-    <!-- HTML -->
-<div id="overlayAd">
-  <img src="https://i.postimg.cc/Dw3ZJXBD/20251227-234209.png" alt="Sticky Ad">
+    <div id="sticky-anchor-ad">
+    <button class="close-btn" onclick="document.getElementById('sticky-anchor-ad').style.display='none';">×</button>
+    <div class="ad-wrapper">
+        <a href="https://t.me/thaistock_2d?direct" target="_blank" rel="noopener noreferrer">
+            <img src="https://i.postimg.cc/pdcbbw78/In-Shot-20260131-215455741.gif" alt="DM For ADS">
+        </a>
+    </div>
 </div>
 
 <style>
-  /* Overlay Container */
-  #overlayAd {
+#sticky-anchor-ad {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 99999;
+    background: rgba(0, 0, 0, 0.5);
+    text-align: center;
+    line-height: 0;
+}
 
-  #overlayAd img {
-    width: 80%;       /* Responsive width */
-    max-width: 400px; /* Desktop max size */
-    aspect-ratio: 1/1; /* Square */
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  }
+.ad-wrapper img {
+    width: 100%;
+    max-width: 728px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+}
 
-  /* Hide overlay initially */
-  #overlayAd.hidden {
-    display: none;
-  }
+.close-btn {
+    position: absolute;
+    top: -25px;
+    right: 5px;
+    background: #ffcc00;
+    color: #000;
+    border: none;
+    border-radius: 5px 5px 0 0;
+    width: 30px;
+    height: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+@media screen and (max-width: 768px) {
+    .ad-wrapper img {
+        max-width: 100%;
+    }
+}
 </style>
 
-<script>
-  // Auto-hide after 5 seconds
-  window.addEventListener('load', () => {
-    const overlay = document.getElementById('overlayAd');
-    setTimeout(() => {
-      overlay.classList.add('hidden');
-    }, 5000);
-  });
-</script>
 </body>
 </html>
 
