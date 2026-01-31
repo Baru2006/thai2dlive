@@ -1,54 +1,80 @@
 const ui = {
-    init() {
-        this.update();
-        // Poll every 2 seconds only when needed (always for simplicity)
-        this.interval = setInterval(() => this.update(), 2000);
+    insightApi: "https://sheetdb.io/api/v1/n0wlxdgwqueub",
 
-        // Source toggle (label only)
-        document.getElementById('toggle-btn').addEventListener('click', () => {
-            const btn = document.getElementById('toggle-btn');
-            btn.textContent = btn.textContent === 'Modern' ? 'Internet' : 'Modern';
-        });
+    init() {
+        this.updateMain();
+        this.updateInsights();
+        
+        // Orchestrate update loops
+        setInterval(() => this.updateMain(), 2000);
+        setInterval(() => this.updateInsights(), 8000);
     },
 
-    async update() {
+    async updateMain() {
         const rawData = await fetchLive();
         const state = deriveState(rawData);
 
-        // Connection error handling
+        const statusEl = document.getElementById('status');
         if (state.error) {
-            document.getElementById('status').textContent = state.error;
+            statusEl.textContent = state.error;
+            statusEl.classList.remove('live');
             return;
         }
 
-        // Large 2D digits
-        let d1 = '--';
-        let d2 = '--';
-        if (state.largeStatus === 'VERIFYING') {
-            document.getElementById('status').textContent = 'VERIFYING...';
-        } else if (state.large2D.length === 2) {
+        // Main Display
+        let d1 = '--', d2 = '--';
+        if (state.large2D.length === 2) {
             d1 = state.large2D[0];
             d2 = state.large2D[1];
-            document.getElementById('status').textContent = state.largeStatus;
-        } else {
-            document.getElementById('status').textContent = state.largeStatus || 'CLOSED';
         }
+
         document.getElementById('digit1').textContent = d1;
         document.getElementById('digit2').textContent = d2;
-
-        // Status styling
-        const statusEl = document.getElementById('status');
-        statusEl.className = 'status ' + state.largeStatus.toLowerCase();
-
-        // Transparency
         document.getElementById('set').textContent = state.setValue;
         document.getElementById('value').textContent = state.marketValue;
 
-        // Session blocks
+        statusEl.textContent = state.largeStatus;
+        if (state.largeStatus === 'LIVE') {
+            statusEl.classList.add('live');
+        } else {
+            statusEl.classList.remove('live');
+        }
+
+        // Sessions
         state.sessions.forEach((ses, i) => {
             const el = document.getElementById('session' + (i + 1));
-            el.textContent = ses.number;
-            el.className = 'number ' + ses.status.toLowerCase();
+            if (el) {
+                el.textContent = ses.number;
+                el.className = 'number ' + ses.status;
+            }
         });
+    },
+
+    async updateInsights() {
+        try {
+            const res = await fetch(this.insightApi);
+            const data = await res.json();
+            if (!data) return;
+
+            this.smoothUpdate("mod930", data[0]?.Modern);
+            this.smoothUpdate("int930", data[0]?.Internet);
+            this.smoothUpdate("mod1400", data[1]?.Modern);
+            this.smoothUpdate("int1400", data[1]?.Internet);
+        } catch (err) {
+            console.warn("Insight sync failed");
+        }
+    },
+
+    smoothUpdate(id, value) {
+        const el = document.getElementById(id);
+        const nextVal = value || "--";
+        if (el && el.textContent !== nextVal) {
+            el.style.opacity = "0.3";
+            setTimeout(() => {
+                el.textContent = nextVal;
+                el.style.opacity = "1";
+            }, 300);
+        }
     }
 };
+
