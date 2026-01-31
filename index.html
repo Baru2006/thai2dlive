@@ -40,6 +40,106 @@
                 </div>
             </section>
             <section>
+                <style>
+        /* Base Styles */
+        body {
+            color: #ffffff; /* Thai stock white */
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* Container & Table Styling */
+        .table-container {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 116, 217, 0.3); /* Subtle light blue border */
+        }
+
+        h2 {
+            text-align: center;
+            color: #0074D9; /* 2D light blue */
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 800;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px; /* Space between rows */
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 15px;
+            color: #0074D9;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #0074D9;
+        }
+
+        td {
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.03);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        /* Row styling */
+        tr td:first-child {
+            border-radius: 8px 0 0 8px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        tr td:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* Number/Data Styling */
+        .stock-number {
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 1.2rem;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(0, 116, 217, 0.5);
+        }
+
+        /* Hover & Interaction */
+        tbody tr:hover td {
+            background-color: rgba(0, 116, 217, 0.2);
+            transform: scale(1.01);
+            cursor: default;
+        }
+
+        /* Status Indicator */
+        .status-dot {
+            height: 8px;
+            width: 8px;
+            background-color: #0074D9;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            box-shadow: 0 0 8px #0074D9;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.7; }
+        }
+            </style>
                     <div class="table-container">
     <h2><span class="status-dot"></span>Market Insights</h2>
     <table id="modernInternetTable">
