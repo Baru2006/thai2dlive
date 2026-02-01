@@ -31,7 +31,7 @@ const ui = {
             const timeString = `${displayHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
             
             const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
-            const dateString = mstDate.toLocaleDateString('en-US', options).replace(/,/g, '');
+            const dateString = mstDate.toLocaleDateString('en-US', options);
 
             const timeEl = document.getElementById('mst-time');
             const dateEl = document.getElementById('mst-date');
@@ -46,25 +46,18 @@ const ui = {
 
     async updateMain() {
         const rawData = await fetchLive();
-        const state = deriveState(rawData);
+        const state = transformState(rawData);
+        if (!state) return;
 
         const statusEl = document.getElementById('status');
-        if (state.error) {
-            statusEl.textContent = state.error;
-            statusEl.classList.remove('live');
-            return;
-        }
-
-        // Main Display
-        let d1 = '--', d2 = '--';
-        if (state.large2D.length === 2) {
-            d1 = state.large2D[0];
-            d2 = state.large2D[1];
-        }
-
+        
+        // Large Display
+        const d1 = state.large2D.charAt(0);
+        const d2 = state.large2D.charAt(1);
         document.getElementById('digit1').textContent = d1;
         document.getElementById('digit2').textContent = d2;
-        document.getElementById('set').textContent = state.setValue;
+
+        document.getElementById('set').textContent = state.marketSet;
         document.getElementById('value').textContent = state.marketValue;
 
         statusEl.textContent = state.largeStatus;
@@ -112,4 +105,3 @@ const ui = {
     }
 };
 
-                               
