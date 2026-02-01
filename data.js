@@ -10,4 +10,3 @@ async function fetchLive() {
         return null;
     }
 }
-
