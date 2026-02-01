@@ -1,7 +1,4 @@
-/**
- * Canonical deterministic 2D extraction.
- * Takes SET and Value strings and extracts the specific 2D pair.
- */
+
 function compute2D(setStr, valueStr) {
     if (!setStr || !valueStr || setStr === '--' || valueStr === '--') return '--';
     const setFixed = parseFloat(setStr).toFixed(2);
@@ -37,12 +34,12 @@ function isEveningVerify(mmtMinutes) {
 /**
  * Transforms raw API response into a clean UI state object.
  */
-function deriveState(rawData) {
-    if (!rawData) return { error: 'OFFLINE' };
+function transformState(apiData) {
+    if (!apiData) return null;
 
-    const live = rawData.live || {};
-    const result = rawData.result || [];
-    const serverTime = rawData.server_time || '';
+    const live = apiData.live || {};
+    const result = apiData.result || [];
+    const serverTime = apiData.server_time || '';
 
     const current2D = compute2D(live.set || '--', live.value || '--');
     const isLive = current2D !== '--';
@@ -90,9 +87,8 @@ function deriveState(rawData) {
     return {
         large2D,
         largeStatus,
-        setValue: live.set || '--',
+        marketSet: live.set || '--',
         marketValue: live.value || '--',
         sessions
     };
-}
-
+        }
