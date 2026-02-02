@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Thai Stock 2D | Premium Live Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-wrapper">
+        <header class="header">
+            <h1 class="logo">THAI STOCK <span>2D</span></h1>
+            <div id="mst-container" class="mst-display">
+                    <div id="mst-time" class="mst-time">--:--:--</div>
+                    <div id="mst-date" class="mst-date">--------</div>
+                </div>
+            <div class="status-indicator" id="status">CONNECTING</div>
+        </header>
+
+        <main class="container">
+            <!-- Hero Section: Live Result -->
+            <section class="live-card">
+                <div class="live-label">LIVE RESULT</div>
+                <div class="live-2d">
+                    <span class="digit" id="digit1">--</span>
+                    <span class="digit-separator"></span>
+                    <span class="digit" id="digit2">--</span>
+                </div>
+                
+                <div class="market-data">
+                    <div class="data-item">
+                        <span class="label">SET Index</span>
+                        <span class="value" id="set">--</span>
+                    </div>
+                    <div class="data-divider"></div>
+                    <div class="data-item">
+                        <span class="label">Value</span>
+                        <span class="value" id="value">--</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Market Insights Table -->
+            <section class="insights-section">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="status-dot"></span>Today's Results</h2>
+                </div>
+            </section>
+
+            <!-- Session Timeline -->
+            <section class="timeline-container">
+                <h2 class="section-title"></h2>
+                <div class="session-grid">
+                    <div class="session-card">
+                        <div class="time">11:00 AM</div>
+                        <div class="number" id="session1">--</div>
+                    </div>
+                    <div class="session-card">
+                        <div class="time">12:01 PM</div>
+                        <div class="number" id="session2">--</div>
+                    </div>
+                    <div class="session-card">
+                        <div class="time">03:00 PM</div>
+                        <div class="number" id="session3">--</div>
+                    </div>
+                    <div class="session-card">
+                        <div class="time">04:30 PM</div>
+                        <div class="number" id="session4">--</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span>Live</span>
+            </a>
+            <a href="gift.html" class="nav-item active">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span>Gift</span>
+            </a>
+            <a href="https://t.me/thaistock_2d" target="_blank" class="nav-item">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span>Telegram</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="state.js"></script>
+    <script src="ui.js"></script>
+    <script>
+        ui.init();
+    </script>
+    <div id="sticky-anchor-ad">
+    <button class="close-btn" onclick="document.getElementById('sticky-anchor-ad').style.display='none';">×</button>
+    <div class="ad-wrapper">
+        <a href="https://t.me/thaistock_2d?direct" target="_blank" rel="noopener noreferrer">
+            <img src="https://i.postimg.cc/pdcbbw78/In-Shot-20260131-215455741.gif" alt="DM For ADS">
+        </a>
+    </div>
+</div>
+
+<style>
+#sticky-anchor-ad {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 99999;
+    background: rgba(0, 0, 0, 0.5);
+    text-align: center;
+    line-height: 0;
+}
+
+.ad-wrapper img {
+    width: 100%;
+    max-width: 728px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+}
+
+.close-btn {
+    position: absolute;
+    top: -25px;
+    right: 5px;
+    background: #ffcc00;
+    color: #000;
+    border: none;
+    border-radius: 5px 5px 0 0;
+    width: 30px;
+    height: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+@media screen and (max-width: 768px) {
+    .ad-wrapper img {
+        max-width: 100%;
+    }
+}
+</style>
+
+</body>
+</html>
+
